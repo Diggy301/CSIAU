@@ -45,7 +45,7 @@ class robot:
 	
 	def move(self):
 		while self.run:
-			if self.getLaserValue(127) > 2:
+			if self.getLaserValue(135) > 2:
 				self.robotForward()
 			else:
 				self.robotturn()

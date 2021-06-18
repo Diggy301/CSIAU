@@ -24,11 +24,11 @@ class robot:
 		self.vel_msg.angular.z = 0.0
 		self.run = True
 		self.Lspeed = 10.0
-		self.Aspeed = 2.0
+		self.Aspeed = 0.2
 		
 		
 	def callback_laser(self, laser):
-		self.laser = laser.ranges
+		self.laser = laser.ranges[120:150]
 	
 	def getLaserValue(self, ang):
 		self.rate.sleep()
@@ -45,10 +45,10 @@ class robot:
 	
 	def move(self):
 		while self.run:
-			if self.getLaserValue(135) > 2:
-				self.robotForward()
-			else:
+			if any(l < 2 for l in self.laser):
 				self.robotturn()
+			else:
+				self.robotForward()
 				
 			self.robotMove()
 			
@@ -68,3 +68,4 @@ if __name__ == '__main__':
 			r.move()
 	except rospy.ROSInterruptException:
 		pass
+

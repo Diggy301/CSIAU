@@ -24,15 +24,11 @@ class robot:
 		self.vel_msg.angular.z = 0.0
 		self.run = True
 		self.Lspeed = 10.0
-		self.Aspeed = 2.0
+		self.Aspeed = 0.2
 		
 		
 	def callback_laser(self, laser):
-		self.laser = laser.ranges
-	
-	def getLaserValue(self, ang):
-		self.rate.sleep()
-		return self.laser[ang]
+		self.laser = laser.ranges[120:150]
 	
 	def robotForward(self):
 		self.vel_msg.linear.x = self.Lspeed
@@ -45,10 +41,10 @@ class robot:
 	
 	def move(self):
 		while self.run:
-			if self.getLaserValue(127) > 2:
-				self.robotForward()
-			else:
+			if any(l < 2 for l in self.laser):
 				self.robotturn()
+			else:
+				self.robotForward()
 				
 			self.robotMove()
 			

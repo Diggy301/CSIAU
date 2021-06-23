@@ -1,0 +1,81 @@
+include "pioneer2.inc"
+include "map.inc"
+include "hokuyo.inc"
+include "block.inc"
+
+paused 0
+
+# configure the GUI window
+window
+(
+  size [ 750 700 ] # in pixels
+  scale 11.570   # pixels per meter
+  center [ -2.703  -1.984 ]
+  rotate [ 0.000  0.000 ]
+  show_data 1              # 1=on 0=off
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "map"
+  size [50.000 50.000 0.800]
+  pose [0.000 0.000 0.000 0.000]
+  bitmap "map_task02.png"
+  boundary 1
+
+  gui_nose 1
+  gui_grid 1
+  gui_outline 1
+  gripper_return 0
+  fiducial_return 1
+  ranger_return 1.000
+)
+
+pioneer2dx_base_no_sonar
+(
+  name "robot"
+  pose [ 15.000 15.000 0.000 -135.000 ]
+  hokuyoranger(pose [ 0.225 0.000 -0.150 0.000 ])
+)
+
+block0(pose [ -24.750 0.000 0.000 90.000 ])
+block0(pose [ 24.750 0.000 0.000 90.000 ])
+block0(pose [ 0.000 24.750 0.000 0.000 ])
+block0(pose [ 0.000 -24.750 0.000 0.000 ])
+block4(pose [ 10.751 -21.328 0.000 0.000 ])
+block4(pose [ -4.428 -16.053 0.000 90.000 ])
+block4(pose [ 5.814 15.728 0.000 0.000 ])
+block4(pose [ -19.691 -0.147 0.000 0.000 ])
+block4(pose [ 19.555 10.114 0.000 0.000 ])
+block4(pose [ 10.990 10.977 0.000 90.000 ])
+block5(pose [ -10.333 -2.953 0.000 90.000 ])
+block6(pose [ -17.334 -17.373 0.000 45.000 ])
+block6(pose [ 9.777 -10.424 0.000 45.000 ])
+block6(pose [ -17.593 17.373 0.000 135.000 ])
+block6(pose [ 17.469 -17.252 0.000 135.000 ])
+block7(pose [ 0.566 12.414 0.000 90.000 ])
+block8(pose [ -14.174 21.227 0.000 0.000 ])
+block8(pose [ -15.238 -4.885 0.000 0.000 ])
+block8(pose [ 23.828 -1.341 0.000 0.000 ])
+block8(pose [ -4.780 0.215 0.000 0.000 ])
+block8(pose [ -16.880 6.179 0.000 0.000 ])
+block8(pose [ 6.197 20.353 0.000 0.000 ])
+block8(pose [ -9.274 18.279 0.000 0.000 ])
+block8(pose [ 19.940 4.536 0.000 0.000 ])
+block9(pose [ 6.889 -4.452 0.000 0.000 ])
+block9(pose [ -20.856 13.439 0.000 0.000 ])
+block9(pose [ -19.646 -15.343 0.000 0.000 ])
+block9(pose [ 10.346 -16.985 0.000 0.000 ])
+block9(pose [ -3.656 21.650 0.000 0.000 ])
+block9(pose [ -2.706 6.956 0.000 0.000 ])
+block9(pose [ 1.616 -10.243 0.000 0.000 ])
+block9(pose [ -10.484 -20.961 0.000 0.000 ])
+block10(pose [ 9.914 0.906 0.000 0.000 ])
+block10(pose [ -6.681 9.376 0.000 0.000 ])
+block10(pose [ -5.125 -5.317 0.000 0.000 ])
+block10(pose [ 19.767 16.982 0.000 0.000 ])
+block11(pose [ -3.570 14.822 0.000 0.000 ])
+block11(pose [ 16.136 20.699 0.000 0.000 ])
+block11(pose [ 19.767 -13.614 0.000 0.000 ])
+block11(pose [ 5.246 11.278 0.000 0.000 ])

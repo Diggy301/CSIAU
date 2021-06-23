@@ -1,0 +1,94 @@
+include "pioneer.inc"
+include "map.inc"
+include "hokuyo.inc"
+include "block.inc"
+
+paused 0
+
+# configure the GUI window
+window
+(
+  size [ 750 700 ] # in pixels
+  scale 11.570   # pixels per meter
+  center [ -0.995  -2.440 ]
+  rotate [ 0.000  0.000 ]
+  show_data 1              # 1=on 0=off
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "map"
+  size [50.000 50.000 0.800]
+  pose [0.000 0.000 0.000 0.000]
+  bitmap "map_task02.png"
+  boundary 1
+
+  gui_nose 1
+  gui_grid 1
+  gui_outline 1
+  gripper_return 0
+  fiducial_return 1
+  ranger_return 1.000
+)
+
+
+pioneer2dx_base_no_sonar
+(
+  name "robot"
+  pose [ 21.000 -22.000 0.000 180.000 ]
+  hokuyoranger(pose [ 0.225 0.000 -0.150 0.000 ])
+)
+
+block0(pose [ -24.750 0.000 0.000 90.000 ])
+block0(pose [ 24.750 0.000 0.000 90.000 ])
+block0(pose [ 0.000 24.750 0.000 0.000 ])
+block0(pose [ 0.000 -24.750 0.000 0.000 ])
+block4(pose [ 19.620 17.545 0.000 0.000 ])
+block4(pose [ 9.507 17.545 0.000 0.000 ])
+block4(pose [ 19.533 -19.793 0.000 0.000 ])
+block4(pose [ 9.594 -19.793 0.000 0.000 ])
+block4(pose [ -0.086 -10.112 0.000 0.000 ])
+block4(pose [ -19.620 6.137 0.000 0.000 ])
+block4(pose [ -20.052 -1.210 0.000 0.000 ])
+block4(pose [ 19.620 10.372 0.000 0.000 ])
+block4(pose [ 19.706 -4.062 0.000 0.000 ])
+block4(pose [ -19.793 -14.952 0.000 0.000 ])
+block4(pose [ -8.038 19.965 0.000 90.000 ])
+block4(pose [ 4.754 -14.952 0.000 90.000 ])
+block4(pose [ 4.754 12.619 0.000 90.000 ])
+block4(pose [ 14.520 -3.371 0.000 90.000 ])
+block4(pose [ -9.507 -19.879 0.000 90.000 ])
+block8(pose [ -13.137 9.075 0.000 0.000 ])
+block8(pose [ -8.643 -5.445 0.000 0.000 ])
+block8(pose [ 9.939 3.889 0.000 0.000 ])
+block8(pose [ -16.768 -8.902 0.000 0.000 ])
+block8(pose [ 15.557 -14.607 0.000 0.000 ])
+block8(pose [ 6.828 -5.964 0.000 0.000 ])
+block8(pose [ 14.780 20.657 0.000 0.000 ])
+block8(pose [ 10.112 12.965 0.000 0.000 ])
+block8(pose [ 20.225 1.901 0.000 0.000 ])
+block8(pose [ -18.755 2.506 0.000 0.000 ])
+block8(pose [ 4.235 -21.953 0.000 0.000 ])
+block8(pose [ 5.704 21.003 0.000 0.000 ])
+block8(pose [ 18.842 14.347 0.000 0.000 ])
+block8(pose [ -0.432 5.099 0.000 0.000 ])
+block8(pose [ -9.939 3.025 0.000 0.000 ])
+block9(pose [ 15.903 -22.558 0.000 0.000 ])
+block9(pose [ -0.086 -5.964 0.000 0.000 ])
+block9(pose [ -7.865 10.372 0.000 0.000 ])
+block9(pose [ -20.830 -5.099 0.000 0.000 ])
+block9(pose [ -19.706 -19.706 0.000 0.000 ])
+block9(pose [ 1.210 -13.570 0.000 0.000 ])
+block9(pose [ -12.187 20.743 0.000 0.000 ])
+block9(pose [ -21.780 9.507 0.000 0.000 ])
+block9(pose [ 8.297 -16.076 0.000 0.000 ])
+block10(pose [ -1.383 20.225 0.000 0.000 ])
+block10(pose [ -18.150 18.496 0.000 0.000 ])
+block10(pose [ -5.186 -18.410 0.000 0.000 ])
+block10(pose [ 19.793 -8.902 0.000 0.000 ])
+block10(pose [ -14.175 -22.299 0.000 0.000 ])
+block11(pose [ -5.964 5.532 0.000 0.000 ])
+block11(pose [ 10.112 -1.210 0.000 0.000 ])
+block11(pose [ 1.815 15.990 0.000 0.000 ])
+block11(pose [ -12.705 16.249 0.000 0.000 ])

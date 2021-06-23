@@ -8,6 +8,4 @@ Stage 1: give a set of waypoints and the robot should reach them (with some tole
 
 Stage 2: move robot without touching walls
 
-Stage 3: ??
-
-TODO: add worlds for later testing
+Stage 3: move robot to gas source

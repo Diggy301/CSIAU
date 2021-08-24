@@ -10,12 +10,12 @@ Stage 3: move robot to gas source
 
 HOW TO RUN:
 to run sim:
-cd ~/catkin_ws/src
-rosrun stage_ros stageros stageDisruptive/gas.world
+$ cd ~/catkin_ws/src
+$ rosrun stage_ros stageros stageDisruptive/gas.world
 
 
 to run gas:
-cd ~/catkin_ws
-rosrun stageControl task03.py
+$ cd ~/catkin_ws
+$ rosrun stageControl task03.py
 
 

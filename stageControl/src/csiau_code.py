@@ -10,7 +10,7 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
-from math import pow, atan2, sqrt, radians, pi
+from math import pow, atan2, sqrt, radians, pi, atan
 import numpy as np
 
 #map limits: (-25,-25) to (25, 25)
@@ -30,8 +30,10 @@ class Robot:
 		self.robot_y = 0
 		self.robot_theta = 0
 		self.laser = []
-		self.waypoint_x, self.waypoint_y = (0,0)
-		self.get_waypoint()
+		self.waypoint_x, self.waypoint_y = (8,-12)
+		self.cont = 0
+		
+		#self.get_waypoint()
 
 
 	def callback_laser(self, msg):
@@ -65,13 +67,41 @@ class Robot:
 		self.waypoint_x, self.waypoint_y = np.random.uniform(-25,25,[1,2])[0]
 
 	def move(self):
-		# check if direction to wyapoint is blocked
-		# if no move
-		# if yes turn to "best side"
-			# return to "line" - move
-		print('aa')
-		pass
+		if len(self.laser):
+			waypoint_direction = self.get_angle_to_waypoint()
+			# if negative turn right
+			waypoint_direction_world = self.robot_theta + waypoint_direction
+			
+			if(self.check_path_to_waypoint(waypoint_direction)):
+				# path to waypoint is not blocked
+				
+				# move to wyapoint				
+				pass
+			else:
+				# path to waypoint is blocked
+
+				# get best side
+				# if yes go 
+				# if no get new point
+
+
+	
+	def check_path_to_waypoint(self, direction):
+
+		ang = 135 + int(direction)
+		angle_list = [ang-2, ang-1, ang, ang+1, ang+2]
+		laser_values = [self.laser[a] for a in angle_list]		
 		
+		if any(l < 3 for l in laser_values):
+			# path is blocked			
+			return False			
+		
+		return True		
+						
+		
+	def get_angle_to_waypoint(self):
+		ang = atan((self.waypoint_y-self.robot_y) / (self.waypoint_x-self.robot_x))
+		return ang * 180 / pi
 
 
 if __name__ == '__main__':

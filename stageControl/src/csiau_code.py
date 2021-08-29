@@ -50,6 +50,10 @@ class Robot:
 		self.gas = float(msg.data)
 
 	def callback_odom(self, msg):
+		"""
+		ROS callback function to read odometry values and calculate
+		yaw (rotation angle in world base) 
+		"""
 		self.robot_x = msg.pose.pose.position.x
 		self.robot_y = msg.pose.pose.position.y
 
@@ -77,7 +81,9 @@ class Robot:
 
 
 	def check_waypoint(self):
-		d = sqrt((self.robot_x - self.waypoint_x)**2 + (self.robot_y - self.waypoint_y)**2)
+		dx = self.robot_x - self.waypoint_x
+		dy = self.robot_y - self.waypoint_y
+		d = sqrt(dx**2 + dy**2)
 		if d < 0.2:
 			return True
 		return False
@@ -87,22 +93,19 @@ class Robot:
 
 	def move_to_waypoint(self):
 		if not self.check_waypoint():
-			
 			waypoint_direction_d = self.get_angle_to_waypoint()
-			#print(waypoint_direction_d)
-			
-			# if direction < 0, turn right
+
 			self.get_linear_vel()
 
 			if self.state == self.GOALSEEK:
-				print('GOALSEEK')
+				#print('GOALSEEK')
 				self.get_goalseek_rot(waypoint_direction_d)
 		
 				if self.check_path_blocked(0):
 					self.state = self.WALLFOLLOW
 			
 			if self.state == self.WALLFOLLOW:
-				print('WALLFOLLOW')	
+				#print('WALLFOLLOW')	
 				self.get_wallfollow_rot(waypoint_direction_d)	
 
 				if not self.check_path_blocked(waypoint_direction_d):
@@ -114,6 +117,10 @@ class Robot:
 
 	
 	def get_linear_vel(self):
+		"""
+		Give linear velocity to robot. Values chosen randomly.
+		Changing these values might also require changing rotation params
+		"""
 		Kp = 0.5
 		K = 1
 
@@ -124,54 +131,98 @@ class Robot:
 		self.vel_msg.linear.x = Kp*d + K
 	
 	def get_goalseek_rot(self, ang):
-
+		"""
+		Give angular velocity to robot in goalseek mode.
+		Angular velocity is a function proportional to the angle to
+		to the waypoint in radians with a randomly chosen weight.
+		In order to smooth rotations the angular velocity is also
+		weighted with the angular velocity of the previous iteration.
+		"""
 		Kp = 2
-		if abs(ang) < 15:
+		if abs(ang) < 5:#15
 			self.vel_msg.angular.z = 0
 		else:
-			self.vel_msg.angular.z = 0.6*self.last_angular_vel + 0.4*(Kp*ang*pi/180)
+			w = Kp*ang*pi/180
+			self.vel_msg.angular.z = 0.6*self.last_angular_vel + 0.4*w
 
 
 
 
 	def get_wallfollow_rot(self, ang):
-
+		"""
+		Give angular velocity to robot in wallfollow mode.
+		Angular velocity is a function proportional to the angle to
+		to the waypoint in radians with a randomly chosen weight.
+		In order to smooth rotations the angular velocity is also
+		weighted with the angular velocity of the previous iteration.
+		"""
+		
+		# Get best angle according to surroundings and desired direction
 		best_ang = self.get_closest_opening(135+ang)
 
-		if abs(best_ang-135) < 10:
+
+		if abs(best_ang-135) < 5:
 			self.vel_msg.angular.z = 0
 
 		else:
 			Kp = 1
 			w = Kp*(best_ang-135)*pi/180
-
-			self.vel_msg.angular.z = 0.6*self.last_angular_vel + 0.4*w
-
+			
+			if abs(w-self.last_angular_vel) > 3:
+				# if change in angular vel is too big, ignore
+				self.vel_msg.angular.z = self.last_angular_vel
+			else:
+				self.vel_msg.angular.z = 0.6*self.last_angular_vel + 0.4*w
 
 		
 	def get_closest_opening(self, angle):
-		binary_map = [0 if value < 4.5 else 1 for value in self.laser]
+		"""
+		Function to return optimal angle. Optimal angle is the
+		closest to the direction to the waypoint that is not blocked
+		"""
+		
+		# 0's for blocked and 1's for open
+		binary_map = [0 if value < 3.5 else 1 for value in self.laser]
 
+		# if straight path (+- 15deg) is open to straigth
+		mid = 135
+		if all(l == 1  for l in binary_map[mid-15:mid+16]):
+        		return mid
+
+		# get midpoint of islands (groups of 1's) bigger than 20
 		directions = []
 		islandsize = 0
+		min_island_size = 20
 		for ind, value in enumerate(binary_map):
 		    if value:
 			islandsize += 1
 		    else:
-			if islandsize > 10:
-			    directions.append(ind-int(islandsize/2)-1)
-			islandsize = 0
+			if islandsize > min_island_size:
+			    directions.append(ind-islandsize//2-1)
 
-		if islandsize > 10:
-		    directions.append(ind-int(islandsize/2))	
-		
+			islandsize = 0
+		if islandsize > min_island_size:
+		    directions.append(ind-islandsize//2)
+
+		# return midpoint of island closest to angle
 		return min(directions, key = lambda x: abs(x-angle))
 
+	
+
 	def check_path_blocked(self, direction):
-		ang = 135 + int(direction)
-		print(ang)
-		laser_values = self.laser[ang-20:ang+20]
-		if any(l < 4 for l in laser_values):
+		"""
+		Function to return True if path is blocked in specified
+		direction (+- 15deg). Otherwise returns False
+		"""
+		
+		freedom = 15
+		threshold = 4
+		ang = 135 + int(direction)		
+		laser_values = self.laser[ang-freedom:ang+freedom]
+		
+		# if any value in range < threshold: path is blocked
+		# range is from direction-freedom to direction+freedom
+		if any(l < threshold for l in laser_values):
 			# path is blocked			
 			return True		
 		
@@ -179,6 +230,10 @@ class Robot:
 						
 		
 	def get_angle_to_waypoint(self):
+		"""
+		Get relative angle from robot direction to waypoint (ex: -30
+		means 30 degrees to the right)
+		"""
 		ang = atan2(self.waypoint_y-self.robot_y, self.waypoint_x-self.robot_x)
 		
 		ang = (ang - self.robot_theta) * 180 / pi
@@ -211,5 +266,14 @@ if __name__ == '__main__':
 		pass
 
 
-#TODO hitting topright corner of second yelllow block
-# CIRCLE MOVE
+
+# TODO: CIRCLE MOVE
+
+
+# self.move_to_waypoint() LOGIC:
+# 1: if on waipoint stop; else ..
+# 1.1: get direction to wayopint.
+# 1.2.1: if state = goalseek: get rotation to wypoint.
+# 1.2.2: if path straight is blocked change state to wallfollow
+# 1.3.1: if state = walllfollow: get best rotation to dodge obstacle
+# 1.3.2: if path to waypoint is not blocked change state to goalseek

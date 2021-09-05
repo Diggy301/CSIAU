@@ -270,8 +270,8 @@ class Robot:
 			self.vel_msg.angular.z = 0.5
 			print('CIRCLE MOVE START (L)')
 		else:
-			self.waypoint_x = self.robot_x + 10*np.cos(self.robot_theta)
-			self.waypoint_y = self.robot_y + 10*np.sin(self.robot_theta)
+			self.waypoint_x = self.robot_x + 7*np.cos(self.robot_theta)
+			self.waypoint_y = self.robot_y + 7*np.sin(self.robot_theta)
 			self.state = self.GOALSEEK
 			print('NO SPACE FOR CIRCLEMOVE')
 			

@@ -18,5 +18,5 @@ to run gas:
 $ cd ~/catkin_ws  
 $ rosrun stageControl task03.py  
 
-run main script:
+run main script:  
 $ rosrun stageControl csiau_code.py

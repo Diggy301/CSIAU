@@ -1,4 +1,4 @@
-# CSIAU - (Hackathon)
+# CSIAU
 Simulator: Disruptive Hackathon Competition
 
 HOW TO RUN:  

@@ -1,4 +1,4 @@
-# Hackathon
+# CSIAU - (Hackathon)
 Disruptive Hackathon Competition
 
 In here are the script for the different stages
